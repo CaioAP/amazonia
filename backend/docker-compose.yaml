@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    ports:
+      - 5439:5432
+    environment:
+      POSTGRES_USER: amazonia_admin
+      POSTGRES_PASSWORD: amazonia1234
+      POSTGRES_DB: amazonia
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    networks:
+      - amazonia
+networks:
+  amazonia:
+    external: true
+volumes:
+  amazonia:
+    driver: local

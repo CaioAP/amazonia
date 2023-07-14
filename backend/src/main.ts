@@ -1,0 +1,20 @@
+import FindFastestPath from './application/usecase/FindFastestPath';
+import GetLastPaths from './application/usecase/GetLastPaths';
+import GetOnePath from './application/usecase/GetOnePath';
+import PgPromise from './infra/database/PgPromiseAdapter';
+import GraphGatewayHttp from './infra/gateway/GraphGatewayHttp';
+import AxiosAdapter from './infra/http/AxiosAdapter';
+import ExpressAdapter from './infra/http/ExpressAdapter';
+import HttpController from './infra/http/HttpController';
+import DeliveryRepositoryDatabase from './infra/repository/DeliveryRepositoryDatabase';
+
+const connection = new PgPromise();
+const httpClient = new AxiosAdapter();
+const deliveryRepository = new DeliveryRepositoryDatabase(connection);
+const graphGateway = new GraphGatewayHttp(httpClient);
+const findFastestPath = new FindFastestPath(graphGateway, deliveryRepository);
+const getLastPaths = new GetLastPaths(deliveryRepository);
+const getOnePath = new GetOnePath(deliveryRepository);
+const httpServer = new ExpressAdapter();
+new HttpController(httpServer, findFastestPath, getLastPaths, getOnePath);
+httpServer.listen(3000);
